@@ -2,15 +2,14 @@ import { useEffect, useState } from 'react'
 
 function App() {
   const parentOrigin = import.meta.env.VITE_HOST_URL
-  const [message, setMessage] = useState<string>() // string | undefined
+  const [filter, setFilter] = useState<string>('') // string | undefined
 
   function onRecievedMessage(event: MessageEvent) {
-    console.log(event)
     if (event.origin !== parentOrigin) {
       return
     }
 
-    setMessage(event.data.message)
+    setFilter(event.data.message)
   }
 
   useEffect(function () {
@@ -21,11 +20,28 @@ function App() {
     }
   })
 
-  if (message === undefined) {
-    return <p className="ml-3">no message has been received</p>
-  }
+  const items = [
+    { name: 'Boeing 737', price: '10$' },
+    { name: 'Airbus A350', price: '20$' },
+    { name: 'Saric 1', price: '99$' }
+  ]
 
-  return <p className="ml-3">Message received: {message}</p>
+  return (
+    <div className="w-52 p-3">
+      <div>Products:</div>
+      {items
+        .filter((item) => (filter ? item.name.includes(filter) : item.name))
+        .map((item, index) => (
+          <div
+            key={index}
+            className="m-1 rounded-md border-2 border-solid border-blue-400 p-1 text-center"
+          >
+            <div>{item.name}</div>
+            <div>{item.price}</div>
+          </div>
+        ))}
+    </div>
+  )
 }
 
 export default App
